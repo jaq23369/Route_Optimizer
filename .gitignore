@@ -29,3 +29,6 @@ frontend/dist/
 # Firebase
 .firebase/
 firebase-debug.log
+
+# Credenciales
+service-account.json
