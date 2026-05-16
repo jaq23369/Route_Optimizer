@@ -1,0 +1,14 @@
+[project]
+name = "route-optimizer-backend"
+version = "0.1.0"
+description = "Backend for Route Optimizer - Genetic Algorithm + Google Maps API"
+requires-python = ">=3.11"
+dependencies = [
+    "googlemaps>=4.10.0",
+    "python-dotenv>=1.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+]
