@@ -22,7 +22,7 @@ POST
 
 ## Request Example
 
-```json id="s0ljlwm"
+```json
 {
   "destinations": [
     "Antigua Guatemala",
@@ -37,7 +37,7 @@ POST
 
 ## Success Response
 
-```json id="2jlwmx"
+```json
 {
   "order": [1, 2, 0],
   "total_distance": 42900.0,
@@ -48,13 +48,14 @@ POST
   ]
 }
 ```
+
 ---
 
 ## Error Examples
 
 ### Invalid mode
 
-```json id="jlwm3n"
+```json
 {
   "error": "mode must be 'open' or 'closed'"
 }
@@ -62,7 +63,7 @@ POST
 
 ### Invalid destinations count
 
-```json id="jlwm4o"
+```json
 {
   "error": "Destinations must contain between 2 and 15 places"
 }
@@ -70,7 +71,7 @@ POST
 
 ### Distance exceeds 100 km
 
-```json id="jlwm5p"
+```json
 {
   "error": "La distancia entre destinos supera el límite de 100 km."
 }
@@ -80,7 +81,7 @@ POST
 
 ## PowerShell Test Example
 
-```powershell id="jlwm6q"
+```powershell
 Invoke-WebRequest `
   -Uri "http://localhost:8080" `
   -Method POST `
