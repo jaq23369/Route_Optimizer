@@ -1,0 +1,4 @@
+flask
+functions-framework
+googlemaps
+python-dotenv
