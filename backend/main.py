@@ -2,7 +2,7 @@ import os
 from flask import jsonify
 
 from genetic_algorithm import optimize_route
-from mock_matrix import MOCK_MATRIX, MOCK_DESTINATIONS
+from distance_matrix import build_distance_matrix
 
 
 ALLOWED_ORIGIN = os.environ.get(
@@ -43,13 +43,14 @@ def optimize(request):
                 "error": "mode must be 'open' or 'closed'"
             }), 400, headers
 
+        matrix = build_distance_matrix(destinations)
         order, total_distance = optimize_route(
-            MOCK_MATRIX,
+            matrix,
             mode
         )
 
         route_details = [
-            MOCK_DESTINATIONS[i]
+            destinations[i]
             for i in order
         ]
 
