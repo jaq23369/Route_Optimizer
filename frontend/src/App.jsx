@@ -46,6 +46,30 @@ export default function App() {
     })
   }, [])
 
+  useEffect(() => {
+    if (!user) return undefined
+
+    const verifyCurrentSession = async () => {
+      try {
+        await user.getIdToken(true)
+      } catch {
+        await logout()
+      }
+    }
+
+    const handleFocus = () => {
+      verifyCurrentSession()
+    }
+
+    window.addEventListener('focus', handleFocus)
+    const intervalId = window.setInterval(verifyCurrentSession, 60_000)
+
+    return () => {
+      window.removeEventListener('focus', handleFocus)
+      window.clearInterval(intervalId)
+    }
+  }, [user])
+
   const handleLogin = useCallback(async () => {
     setAuthError(null)
 
@@ -83,6 +107,12 @@ export default function App() {
     } finally {
       setLoading(false)
     }
+  }, [])
+
+  const handleDraftChange = useCallback(() => {
+    setError(null)
+    setResult(null)
+    setPositions(null)
   }, [])
 
   if (!authReady) {
@@ -186,6 +216,7 @@ export default function App() {
           <DestinationInput
             isLoaded={isLoaded}
             onCalculate={handleCalculate}
+            onDraftChange={handleDraftChange}
             loading={loading}
           />
 

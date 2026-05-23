@@ -1,5 +1,5 @@
 import { useRef, useCallback, useEffect, useState, useMemo } from 'react'
-import { GoogleMap, MarkerF, PolylineF, DirectionsRenderer } from '@react-google-maps/api'
+import { GoogleMap, MarkerF, PolylineF } from '@react-google-maps/api'
 
 /* ── Constants ── */
 const GUATEMALA_CENTER = { lat: 14.6349, lng: -90.5069 }
@@ -68,6 +68,7 @@ function createPinIcon(number) {
 /* ── Map Component ── */
 export default function Map({ isLoaded, result, positions, mode }) {
   const mapRef = useRef(null)
+  const directionsRequestRef = useRef(0)
   const [directions, setDirections] = useState(null)
 
   const onMapLoad = useCallback((map) => {
@@ -80,6 +81,26 @@ export default function Map({ isLoaded, result, positions, mode }) {
       ? result.order.map((i) => positions[i]).filter(Boolean)
       : []
   }, [result, positions])
+
+  const routeKey = useMemo(() => {
+    return JSON.stringify({
+      mode,
+      path: orderedPositions.map((pos) => [
+        Number(pos.lat).toFixed(6),
+        Number(pos.lng).toFixed(6),
+      ]),
+    })
+  }, [mode, orderedPositions])
+
+  const directionsPath = useMemo(() => {
+    const overviewPath = directions?.routes?.[0]?.overview_path
+    if (!overviewPath) return []
+
+    return overviewPath.map((point) => ({
+      lat: point.lat(),
+      lng: point.lng(),
+    }))
+  }, [directions])
 
   /* Auto-fit bounds whenever a new result arrives */
   useEffect(() => {
@@ -99,9 +120,14 @@ export default function Map({ isLoaded, result, positions, mode }) {
   /* Fetch street-by-street directions when path changes */
   useEffect(() => {
     if (!isLoaded || orderedPositions.length < 2) {
+      directionsRequestRef.current += 1
       setDirections(null)
       return
     }
+
+    const requestId = directionsRequestRef.current + 1
+    directionsRequestRef.current = requestId
+    setDirections(null)
 
     const directionsService = new window.google.maps.DirectionsService()
 
@@ -131,6 +157,8 @@ export default function Map({ isLoaded, result, positions, mode }) {
         travelMode: window.google.maps.TravelMode.DRIVING,
       },
       (response, status) => {
+        if (directionsRequestRef.current !== requestId) return
+
         if (status === window.google.maps.DirectionsStatus.OK) {
           setDirections(response)
         } else {
@@ -176,18 +204,16 @@ export default function Map({ isLoaded, result, positions, mode }) {
           />
         ))}
 
-        {/* Route directions (street-by-street) */}
-        {directions ? (
-          <DirectionsRenderer
-            key={JSON.stringify(orderedPositions)}
-            directions={directions}
+        {/* Route directions (street-by-street path controlled by React) */}
+        {directionsPath.length > 1 ? (
+          <PolylineF
+            key={routeKey}
+            path={directionsPath}
             options={{
-              suppressMarkers: true,
-              polylineOptions: {
-                strokeColor:   '#00c6ff',
-                strokeWeight:  5,
-                strokeOpacity: 0.85,
-              },
+              strokeColor:   '#00c6ff',
+              strokeWeight:  5,
+              strokeOpacity: 0.9,
+              geodesic:      false,
             }}
           />
         ) : (

@@ -183,7 +183,3 @@ In GCP, Firebase Admin uses Application Default Credentials. Do not upload `serv
 - Google Distance Matrix API
 - Python, Functions Framework, uv
 - Genetic algorithm for route optimization
-
-## Contributors
-
-- Route Optimizer team

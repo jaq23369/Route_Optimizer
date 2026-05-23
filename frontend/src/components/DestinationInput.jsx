@@ -11,9 +11,10 @@ let _nextId = 3
  * Props:
  *  isLoaded    {boolean}   Google Maps API ready
  *  onCalculate {Function}  (addresses[], mode, positions[]) => void
+ *  onDraftChange {Function} clears stale route output when user edits inputs
  *  loading     {boolean}   calculation in progress
  */
-export default function DestinationInput({ isLoaded, onCalculate, loading }) {
+export default function DestinationInput({ isLoaded, onCalculate, onDraftChange, loading }) {
   const [items, setItems] = useState([
     { id: 1, address: '', position: null },
     { id: 2, address: '', position: null },
@@ -22,6 +23,7 @@ export default function DestinationInput({ isLoaded, onCalculate, loading }) {
 
   /* Called when user picks a suggestion */
   const handlePlaceSelect = (id, { address, position }) => {
+    onDraftChange?.()
     setItems((prev) =>
       prev.map((item) =>
         item.id === id ? { ...item, address, position } : item
@@ -31,6 +33,7 @@ export default function DestinationInput({ isLoaded, onCalculate, loading }) {
 
   /* Called when user edits the text field — clears stored position */
   const handleInputChange = (id) => {
+    onDraftChange?.()
     setItems((prev) =>
       prev.map((item) =>
         item.id === id ? { ...item, position: null } : item
@@ -40,12 +43,19 @@ export default function DestinationInput({ isLoaded, onCalculate, loading }) {
 
   const addItem = () => {
     if (items.length >= 15) return
+    onDraftChange?.()
     setItems((prev) => [...prev, { id: _nextId++, address: '', position: null }])
   }
 
   const removeItem = (id) => {
     if (items.length <= 2) return
+    onDraftChange?.()
     setItems((prev) => prev.filter((item) => item.id !== id))
+  }
+
+  const handleModeChange = (nextMode) => {
+    onDraftChange?.()
+    setMode(nextMode)
   }
 
   const allValid  = items.every((i) => i.address && i.position)
@@ -114,14 +124,14 @@ export default function DestinationInput({ isLoaded, onCalculate, loading }) {
           <button
             id="mode-open"
             className={`mode-btn ${mode === 'open' ? 'active' : ''}`}
-            onClick={() => setMode('open')}
+            onClick={() => handleModeChange('open')}
           >
             → Abierta
           </button>
           <button
             id="mode-closed"
             className={`mode-btn ${mode === 'closed' ? 'active' : ''}`}
-            onClick={() => setMode('closed')}
+            onClick={() => handleModeChange('closed')}
           >
             ↩ Cerrada
           </button>

@@ -1,4 +1,5 @@
 import { auth } from './firebase'
+import { signOut } from 'firebase/auth'
 
 /**
  * Cloud Function Service
@@ -26,7 +27,13 @@ export async function calculateRoute(destinations, mode) {
     throw new Error('Inicia sesión para calcular una ruta.')
   }
 
-  const token = await user.getIdToken()
+  let token
+  try {
+    token = await user.getIdToken(true)
+  } catch {
+    await signOut(auth)
+    throw new Error('Tu sesión ya no es válida. Inicia sesión de nuevo.')
+  }
 
   let response
   try {
