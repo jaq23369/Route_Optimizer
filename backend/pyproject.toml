@@ -4,6 +4,8 @@ version = "0.1.0"
 description = "Backend for Route Optimizer - Genetic Algorithm + Google Maps API"
 requires-python = ">=3.11"
 dependencies = [
+    "firebase-admin>=6.6.0",
+    "functions-framework>=3.8.0",
     "googlemaps>=4.10.0",
     "python-dotenv>=1.0.0",
 ]

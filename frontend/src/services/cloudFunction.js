@@ -1,3 +1,5 @@
+import { auth } from './firebase'
+
 /**
  * Cloud Function Service
  * Calls the GCP Cloud Function endpoint to calculate the optimal route.
@@ -19,11 +21,21 @@ export async function calculateRoute(destinations, mode) {
     )
   }
 
+  const user = auth.currentUser
+  if (!user) {
+    throw new Error('Inicia sesión para calcular una ruta.')
+  }
+
+  const token = await user.getIdToken()
+
   let response
   try {
     response = await fetch(CLOUD_FUNCTION_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({ destinations, mode }),
     })
   } catch {
@@ -32,7 +44,10 @@ export async function calculateRoute(destinations, mode) {
     )
   }
 
-  const data = await response.json()
+  const contentType = response.headers.get('content-type') || ''
+  const data = contentType.includes('application/json')
+    ? await response.json()
+    : { error: await response.text() }
 
   if (!response.ok) {
     throw new Error(data.error || `Error ${response.status} del servidor.`)

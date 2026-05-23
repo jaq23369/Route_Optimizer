@@ -122,11 +122,110 @@ body {
   border-radius: 20px;
 }
 
+.header-user {
+  margin-left: auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-name {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-2);
+  font-size: 12px;
+}
+
+.btn-logout {
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-card);
+  color: var(--text-1);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease),
+              border-color var(--dur) var(--ease);
+}
+
+.btn-logout:hover {
+  background: var(--bg-card-hover);
+  border-color: rgba(0, 198, 255, 0.35);
+}
+
 /* ── Main layout ── */
 .main-layout {
   flex: 1;
   display: flex;
   overflow: hidden;
+}
+
+/* ==========================================
+   AUTH
+   ========================================== */
+.auth-shell {
+  min-height: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(0, 198, 255, 0.16), transparent 30%),
+    radial-gradient(circle at 80% 0%, rgba(16, 185, 129, 0.12), transparent 28%),
+    var(--bg-app);
+}
+
+.auth-panel {
+  width: min(100%, 430px);
+  background: rgba(11, 18, 32, 0.92);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 28px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.auth-logo {
+  width: 44px;
+  height: 44px;
+}
+
+.auth-title {
+  font-size: 28px;
+  line-height: 1.1;
+  font-weight: 800;
+}
+
+.auth-copy {
+  color: var(--text-2);
+  line-height: 1.6;
+}
+
+.auth-button {
+  margin-top: 6px;
+}
+
+.google-mark {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  color: #1f2937;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-error {
+  width: 100%;
 }
 
 /* ==========================================
@@ -576,3 +675,130 @@ body {
 
 .pac-item-query { color: var(--text-1); font-size: 13px; }
 .pac-icon { display: none; }
+
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
+@media (max-width: 900px) {
+  html, body, #root {
+    min-height: 100%;
+    height: auto;
+    overflow: auto;
+  }
+
+  .app {
+    min-height: 100vh;
+    height: auto;
+  }
+
+  .header {
+    height: auto;
+    min-height: var(--header-h);
+    flex-wrap: wrap;
+    padding: 10px 14px;
+  }
+
+  .header-tag {
+    display: none;
+  }
+
+  .header-user {
+    flex-basis: 100%;
+    justify-content: space-between;
+    margin-left: 0;
+  }
+
+  .user-name {
+    max-width: calc(100vw - 98px);
+  }
+
+  .main-layout {
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  .sidebar {
+    width: 100%;
+    max-height: none;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+    padding: 14px;
+    overflow: visible;
+  }
+
+  .card {
+    padding: 14px;
+  }
+
+  .dest-row {
+    align-items: flex-start;
+  }
+
+  .dest-badge,
+  .btn-remove {
+    width: 32px;
+    height: 32px;
+  }
+
+  .mode-row {
+    flex-direction: column;
+  }
+
+  .mode-btn,
+  .btn-add,
+  .btn-calc,
+  .btn-logout {
+    min-height: 44px;
+  }
+
+  .route-item__name {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .map-wrapper,
+  .map-loading {
+    min-height: 58vh;
+    height: 58vh;
+  }
+
+  .map-empty-overlay {
+    width: calc(100% - 28px);
+    bottom: 14px;
+    padding: 10px 14px;
+    white-space: normal;
+    text-align: center;
+  }
+}
+
+@media (max-width: 520px) {
+  body {
+    font-size: 13px;
+  }
+
+  .auth-shell {
+    padding: 14px;
+  }
+
+  .auth-panel {
+    padding: 22px;
+  }
+
+  .auth-title {
+    font-size: 24px;
+  }
+
+  .header-title {
+    font-size: 15px;
+  }
+
+  .result-distance-number {
+    font-size: 34px;
+  }
+
+  .map-wrapper,
+  .map-loading {
+    min-height: 52vh;
+    height: 52vh;
+  }
+}
