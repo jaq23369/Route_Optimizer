@@ -32,6 +32,27 @@ def test_post_without_token_returns_401():
     assert response[0].get_json()["error"] == "Missing or invalid Authorization header"
 
 
+def test_token_verification_checks_revoked_tokens(monkeypatch):
+    captured = {}
+
+    def fake_verify_id_token(token, check_revoked=False):
+        captured["token"] = token
+        captured["check_revoked"] = check_revoked
+        return {"uid": "test-user"}
+
+    monkeypatch.setattr(main.firebase_auth, "verify_id_token", fake_verify_id_token)
+
+    with app.test_request_context(
+        "/",
+        method="POST",
+        headers={"Authorization": "Bearer valid-token"},
+    ):
+        decoded = main._verify_firebase_token(request)
+
+    assert decoded == {"uid": "test-user"}
+    assert captured == {"token": "valid-token", "check_revoked": True}
+
+
 def test_valid_request_returns_optimized_route(monkeypatch):
     monkeypatch.setattr(main, "_verify_firebase_token", lambda req: {"uid": "test-user"})
     monkeypatch.setattr(main, "build_distance_matrix", lambda destinations: [[0, 10], [10, 0]])

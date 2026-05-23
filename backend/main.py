@@ -42,7 +42,7 @@ def _verify_firebase_token(request):
         raise PermissionError("Missing Firebase token")
 
     try:
-        return firebase_auth.verify_id_token(token)
+        return firebase_auth.verify_id_token(token, check_revoked=True)
     except Exception as exc:
         raise PermissionError("Invalid Firebase token") from exc
 
