@@ -9,6 +9,28 @@ import { login, logout, onAuthStateChanged } from './services/firebase'
 /* Defined outside component and frozen — prevents LoadScript from reloading on HMR */
 const LIBRARIES = Object.freeze(['places'])
 
+function RouteIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"
+      strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="6" cy="19" r="2"/>
+      <circle cx="18" cy="5" r="2"/>
+      <path d="M6 17V9a6 6 0 0 1 6-6h2"/>
+      <path d="M18 7v8a6 6 0 0 1-6 6H9"/>
+    </svg>
+  )
+}
+
+function ShieldIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+      strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      <path d="m9 12 2 2 4-5"/>
+    </svg>
+  )
+}
+
 /**
  * App — root component.
  *
@@ -120,13 +142,7 @@ export default function App() {
       <div className="app auth-shell">
         <div className="auth-panel">
           <div className="header-logo auth-logo" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2"
-              strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="6" cy="19" r="2"/>
-              <circle cx="18" cy="5" r="2"/>
-              <path d="M6 17V9a6 6 0 0 1 6-6h2"/>
-              <path d="M18 7v8a6 6 0 0 1-6 6H9"/>
-            </svg>
+            <RouteIcon />
           </div>
           <h1 className="auth-title">Route Optimizer</h1>
           <div className="spinner-lg" />
@@ -141,19 +157,17 @@ export default function App() {
       <div className="app auth-shell">
         <section className="auth-panel">
           <div className="header-logo auth-logo" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2"
-              strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="6" cy="19" r="2"/>
-              <circle cx="18" cy="5" r="2"/>
-              <path d="M6 17V9a6 6 0 0 1 6-6h2"/>
-              <path d="M18 7v8a6 6 0 0 1-6 6H9"/>
-            </svg>
+            <RouteIcon />
           </div>
           <p className="card-label">Acceso seguro</p>
           <h1 className="auth-title">Route Optimizer</h1>
           <p className="auth-copy">
-            Inicia sesión con Google para calcular rutas optimizadas y proteger las llamadas al backend.
+            Planifica rutas en Guatemala con autenticación Firebase, Google Maps y un backend protegido.
           </p>
+          <div className="auth-proof">
+            <ShieldIcon />
+            <span>Sesión requerida para ejecutar el cálculo optimizado.</span>
+          </div>
 
           <button className="btn-calc auth-button" onClick={handleLogin}>
             <span className="google-mark" aria-hidden="true">G</span>
@@ -176,8 +190,8 @@ export default function App() {
 
       {/* Missing API key warning */}
       {!apiKey && (
-        <div className="error-banner" role="alert" style={{ margin: '10px 16px 0', borderRadius: 10 }}>
-          <strong>⚠ Falta la API Key de Google Maps</strong>
+        <div className="error-banner api-warning" role="alert">
+          <strong>Falta la API Key de Google Maps</strong>
           Crea el archivo <code>frontend/.env</code> con <code>VITE_GOOGLE_MAPS_API_KEY=tu_clave</code> y reinicia el servidor.
         </div>
       )}
@@ -185,17 +199,13 @@ export default function App() {
       {/* ── Header ── */}
       <header className="header">
         <div className="header-logo" aria-hidden="true">
-          {/* Route icon */}
-          <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2"
-            strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="6"  cy="19" r="2"/>
-            <circle cx="18" cy="5"  r="2"/>
-            <path d="M6 17V9a6 6 0 0 1 6-6h2"/>
-            <path d="M18 7v8a6 6 0 0 1-6 6H9"/>
-          </svg>
+          <RouteIcon />
         </div>
-        <h1 className="header-title">Route Optimizer</h1>
-        <span className="header-tag">Algoritmo Genético</span>
+        <div className="header-copy">
+          <h1 className="header-title">Route Optimizer</h1>
+          <span className="header-subtitle">Despacho inteligente de rutas</span>
+        </div>
+        <span className="header-tag">Algoritmo genético</span>
         <div className="header-user">
           <span className="user-name" title={user.email || user.displayName || 'Usuario autenticado'}>
             {user.displayName || user.email}
@@ -223,7 +233,7 @@ export default function App() {
           {/* Error notification */}
           {error && (
             <div className="error-banner" role="alert">
-              <strong>⚠ Error al calcular la ruta</strong>
+              <strong>Error al calcular la ruta</strong>
               {error}
             </div>
           )}
@@ -236,7 +246,7 @@ export default function App() {
         </aside>
 
         {/* Map fills remaining space */}
-        <main style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+        <main className="map-panel">
           <Map
             isLoaded={isLoaded}
             result={result}

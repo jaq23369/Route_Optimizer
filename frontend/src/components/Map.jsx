@@ -235,7 +235,8 @@ export default function Map({ isLoaded, result, positions, mode }) {
       {/* Hint when no route yet */}
       {!result && (
         <div className="map-empty-overlay">
-          🗺️ Ingresa tus destinos y calcula la ruta óptima
+          <span className="map-empty-kicker">Mapa listo</span>
+          <span>Ingresa tus destinos y calcula la ruta óptima.</span>
         </div>
       )}
     </div>
